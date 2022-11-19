@@ -13,3 +13,6 @@ beautifulsoup4==4.11.1
 gensim==4.2.0
 xgboost==1.7.1
 Corpora==1.0
+pydantic==1.10.2
+
+
