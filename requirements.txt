@@ -12,3 +12,4 @@ html5lib==1.1
 beautifulsoup4==4.11.1
 gensim==4.2.0
 xgboost==1.7.1
+Corpora==1.0
