@@ -9,6 +9,6 @@ app = FastAPI()
 
 @app.get("/", tags=["Home"])
 def get_root() -> dict:
-    returrn {
+    return {
         "message": "API de detection des TAGS StackOverFlow :"
     }
