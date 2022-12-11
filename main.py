@@ -14,11 +14,8 @@
 
 ###############################################################################################################################
 
-import IPython.display
 import re
 import pickle
-import requests
-
 
 import pandas as pd
 import numpy as np
@@ -495,6 +492,6 @@ async def predictions(data: Input):
 ###############################################################################################################################
 
 
-if __name__ == "__main__":
-    app.run()
+#if __name__ == "__main__":
+   #app.run()
 
