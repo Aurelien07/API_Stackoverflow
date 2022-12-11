@@ -329,7 +329,7 @@ bow_pickle = pickle.load(
 
 # Supervisé model :
 bow_reg_log = pickle.load(
-    open('model_reg_log.pkl', 'rb'))
+    open('model_log.pkl', 'rb'))
 
 # Multilabel :
 multilabel = pickle.load(
