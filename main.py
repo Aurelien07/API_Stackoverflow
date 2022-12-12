@@ -329,7 +329,7 @@ bow_pickle = pickle.load(
 
 # Supervisé model :
 bow_reg_log = pickle.load(
-    open('model_reg_log.pkl', 'rb'))
+    open('model_log.pkl', 'rb'))
 
 # Multilabel :
 multilabel = pickle.load(
@@ -463,6 +463,7 @@ async def predictions(data: Input):
                   ##############################################################################
                   ############################ Non supervisé : #################################
                   ##############################################################################
+                
 # Abandonné car non pertinent
 """    
     corpus_final = gensim_dictionary.doc2bow(text_lemmatized)
@@ -492,6 +493,6 @@ async def predictions(data: Input):
 ###############################################################################################################################
 
 
-#if __name__ == "__main__":
-   #app.run()
+if __name__ == "__main__":
+   app.run()
 
