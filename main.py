@@ -296,10 +296,10 @@ def lemmatisation(text):
     # Init the Wordnet Lemmatizer
     lemmatizer = WordNetLemmatizer()
 
-    res = [lemmatizer.lemmatize(word, wordnet.VERB) for word in text]
-    res = [lemmatizer.lemmatize(word, wordnet.ADJ) for word in res]
-    res = [lemmatizer.lemmatize(word, wordnet.NOUN) for word in res]
-    res = [lemmatizer.lemmatize(word, wordnet.ADV) for word in res]
+    # res = [lemmatizer.lemmatize(word, wordnet.VERB) for word in text]
+    # res = [lemmatizer.lemmatize(word, wordnet.ADJ) for word in res]
+    # res = [lemmatizer.lemmatize(word, wordnet.NOUN) for word in res]
+    res = [lemmatizer.lemmatize(word) for word in text]
 
     return res
 
@@ -397,32 +397,31 @@ async def predictions(data: Input):
     
     text = input_data['text']
     
-
     clean = clean_html(text)
     
-    print(clean)
+    print('CLEAN', clean)
     
     text_clean = text_cleaning(clean)
     #data['corpus'] = data['corpus'].apply(lambda x : text_cleaning(x))
     
-    print(text_clean)
+    print('TEXTE CLEAN',text_clean)
     
-    text_contracted = expand_contractions(text_clean)
+    # text_contracted = expand_contractions(text_clean)
     #data['corpus'] = data['corpus'].apply(lambda x : expand_contractions(x))
     
-    print(text_contracted)
+    # print(text_contracted)
     
-    text_tokenized = tokenize(text_contracted)
+    text_tokenized = tokenize(text_clean)
 
-    print(text_tokenized)
+    print('TEXT TOKENIZED', text_tokenized)
     
-    text_filtering_nouns = filtering_nouns(text_tokenized)
+   # text_filtering_nouns = filtering_nouns(text_tokenized)
 
     #print(text_filtering_nouns)
     
-    text_lemmatized = lemmatisation(text_filtering_nouns)
+    # text_lemmatized = lemmatisation(text_tokenized)
 
-    #print(text_lemmatized[0])
+   #  print('TEXTE LEMMATIZED', text_lemmatized)
     
 
                   ##############################################################################
@@ -430,13 +429,14 @@ async def predictions(data: Input):
                   ##############################################################################
                 
     
-    bow_corpus = bag_of_words(text_lemmatized)
+    bow_corpus = bag_of_words(text_tokenized)
     
     # print(bow_corpus)
     
     supervised_pred = bow_reg_log.predict(bow_corpus.toarray())
+
     
-    #print(supervised_pred)
+    # print(supervised_pred)
     
     
                   ##############################################################################
@@ -446,18 +446,31 @@ async def predictions(data: Input):
     
     tags = multilabel.inverse_transform(supervised_pred)
     
+    tags = [list(item)[0] for item in tags if len(item) != 0 ]
+    
+    if len(tags) == 0 :
+        
+        prediction = bow_reg_log.predict_proba(bow_corpus.toarray())
+        df_proba = pd.DataFrame(supervised_pred, columns=list(multilabel.classes_))
+    
+        top_tags = []
+        for i, row in df_proba.iterrows() :
+            top = row.nlargest(2).index
+            
+        top_tags.append(','.join(top))
+        
+        tags = top_tags
+    
+    
     print(tags)
-    
-    
+
                   ##############################################################################
                   ############################## Encode en json : ##############################
                   ##############################################################################
-                
 
-    text = jsonable_encoder(data.text)
 
     ## retoune la requête en json : ##
-    return JSONResponse(status_code=200, content={"Tags_supervisé" : tags })
+    return  JSONResponse(status_code=200, content={"Tags_supervisé" : tags })
 
     
                   ##############################################################################
@@ -496,3 +509,8 @@ async def predictions(data: Input):
 if __name__ == "__main__":
    app.run()
 
+"""
+{
+  "text": "Android Studio php connection I'm trying to get information from db using php in android studio java. The php code works 100%. The problems is that when I open the app from the Android emulator the app closes itself almost instantly."
+}
+"""
